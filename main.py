@@ -44,9 +44,9 @@ class ColorfulLogger:
         if not word_data:
             return
             
-        table = Table(show_header=False, border_style="cyan", padding=(0, 1))
-        table.add_column("Field", style="bold cyan", no_wrap=True)
-        table.add_column("Value", style="white")
+        table = Table(show_header=False, border_style="cyan", padding=(0, 1), width=80)
+        table.add_column("Field", style="bold cyan", no_wrap=True, width=12)
+        table.add_column("Value", style="white", max_width=65)
         
         table.add_row("Word", f"[bold yellow]{word_data.get('word', 'N/A')}[/bold yellow]")
         table.add_row("Reading", f"[green]{', '.join(word_data.get('readings', []))}[/green]")
@@ -58,7 +58,12 @@ class ColorfulLogger:
             table.add_row("Example", f"[dim white]{example['sentences']['japanese']}[/dim white]")
             table.add_row("Translation", f"[dim cyan]{example['sentences']['english']}[/dim cyan]")
         
-        self.console.print(Panel(table, title=f"{emoji} {word_data.get('word', 'Word')}", border_style="cyan"))
+        self.console.print(Panel(
+            table, 
+            title=f"{emoji} {word_data.get('word', 'Word')}", 
+            border_style="cyan",
+            width=84
+        ))
 
 # Create global logger instance
 logger = ColorfulLogger()
@@ -187,10 +192,17 @@ class JapaneseWord(str):
         """Format and display multiple words in a nice readable format"""
         logger.header("Processing Multiple Words", "📚")
         
+        # Process words with progress bar
+        processed_words = []
         for word_str in track(words_list, description="🔍 Looking up words..."):
             word = JapaneseWord(word_str)
+            processed_words.append(word)
+        
+        # Display results after progress is complete
+        console.print()  # Add spacing after progress bar
+        for word in processed_words:
             word.display()
-            console.print()  # Add spacing
+            console.print()  # Add spacing between words
 
 
 def jp_words(word_list):
@@ -208,11 +220,18 @@ def process_words_from_file(file_path):
         logger.success(f"Found {len(words)} words to process", "🎯")
         logger.header(f"Processing Words from {file_path}", "📂")
         
+        # Process words with progress bar
+        processed_words = []
         for word_text in track(words, description="🔍 Looking up words..."):
             if word_text:  # Skip empty lines
                 word = JapaneseWord(word_text)
-                word.display()
-                console.print()  # Add spacing
+                processed_words.append(word)
+        
+        # Display results after progress is complete
+        console.print()  # Add spacing after progress bar
+        for word in processed_words:
+            word.display()
+            console.print()  # Add spacing between words
         
         logger.success(f"Completed processing {len(words)} words!", "🎉")
                 
