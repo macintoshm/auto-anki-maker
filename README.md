@@ -6,7 +6,8 @@ I created AutoAnkiMaker to create a whole bunch of Anki flashcards from just a l
 
 ## How to Use
 
-- Download jmdict
+-  Unzip `jmdict-with-examples.zip` and save the .json file in the Yasashii directory or wherever else you want to keep it. 
+- 
 - Create Anki deck with fields
 - Fill out .env from .env.example
 - `uv tool install . -e`
@@ -14,5 +15,7 @@ I created AutoAnkiMaker to create a whole bunch of Anki flashcards from just a l
 ## Resources
 
 [AnkiConnect](https://ankiweb.net/shared/info/2055492159)
+
 [AnkiConnect Sourcehut](https://git.sr.ht/~foosoft/anki-connect)
+
 [JMDict Simplified](https://github.com/scriptin/jmdict-simplified)
