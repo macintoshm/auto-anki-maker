@@ -103,8 +103,6 @@ class AnkiClient:
         sentence_translation_field=os.getenv('AUTO_ANKI_SENTENCE_TRANSLATION_FIELD')
         audio_field=os.getenv('AUTO_ANKI_AUDIO_FIELD')
 
-        print(card_info.get('readings'))
-
         if card_info.get('examples'):
             example = card_info['examples'][0]
             sentence = example['sentences']['japanese']

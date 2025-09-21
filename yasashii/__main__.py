@@ -93,6 +93,40 @@ def process_words_from_file(file_path, create=False):
     except Exception as e:
         logger.error(f"Error processing file: {e}")
 
+def process_multiple_words(words, create=False):
+    """Process multiple Japanese words"""
+    logger.success(f"Found {len(words)} words to process", "🎯")
+    logger.header(f"Processing Words", "📂")
+    
+    # Process words with progress bar
+    processed_words = []
+    for word_text in track(words, description="🔍 Looking up words..."):
+        if word_text:  # Skip empty strings
+            word = JapaneseWord(word_text)
+            processed_words.append(word)
+    
+    if create:
+        client = AnkiClient()
+    
+    # Display results after progress is complete
+    console.print()  # Add spacing after progress bar
+    for word in processed_words:
+        word.display()
+        console.print()  # Add spacing between words
+        if create:
+            try:
+                logger.info(f"Creating Anki card for: {word.word}", "📝")
+                client.create_card(word.meaning)
+                logger.success(f"Successfully created Anki card for: {word.word}", "🎴")
+            except Exception as e:
+                if "duplicate" in str(e).lower():
+                    logger.warning(f"Card for '{word.word}' already exists in deck", "🔄")
+                else:
+                    logger.error(f"Failed to create card for '{word.word}': {e}", "❌")
+    
+    logger.success(f"Completed processing {len(words)} words!", "🎉")
+
+
 def main():
     """Main function with argument parsing"""
     # Welcome message
@@ -104,18 +138,19 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  yasa -w 力             # Look up a single word
-  yasa --word 食べる     # Same as above
-  yasa -f words.txt      # Process words from file
-  yasa -w 行く --create  # Look up word and create Anki card
+  yasashii 力               # Look up a single word
+  yasashii 誰も 犬          # Look up multiple words
+  yasashii -f words.txt     # Process words from file
+  yasashii 行く --create    # Look up word and create Anki card
+  yasashii 食べる 寝る --create  # Look up multiple words and create Anki cards
         """
     )
+    parser.add_argument('words', 
+                        nargs='*',
+                        help='🔍 Japanese words to look up (can specify multiple)')
     parser.add_argument('-f', '--file', 
                         type=str,
                         help='📁 Path to a text file containing Japanese words (one per line)')
-    parser.add_argument('-w', '--word',
-                        type=str,
-                        help='🔍 Look up a single Japanese word')
     parser.add_argument('-c', '--create',
                         action='store_true',
                         help='🗂️ Create card(s) in Anki')
@@ -125,9 +160,12 @@ Examples:
         if args.file:
             # Process words from file
             process_words_from_file(args.file, create=args.create)
-        elif args.word:
-            # Process single word
-            process_single_word(args.word, create=args.create)
+        elif args.words:
+            # Process words from command line arguments
+            if len(args.words) == 1:
+                process_single_word(args.words[0], create=args.create)
+            else:
+                process_multiple_words(args.words, create=args.create)
         else:
             logger.info("No arguments provided, showing help", "🌸")
             parser.print_help()
@@ -142,3 +180,7 @@ Examples:
 
 if __name__ == "__main__":
     main()
+
+def alfred():
+    """Alfred workflow entry point"""
+    print("Alfred workflow entry point")
