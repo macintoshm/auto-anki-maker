@@ -7,6 +7,7 @@ from rich.progress import track
 # Import our custom modules
 from auto_anki_maker.logging import logger
 from auto_anki_maker.japanese_word import JapaneseWord, jp_words
+from auto_anki_maker.anki_client import AnkiClient
 
 # Set up Rich console
 console = Console()
@@ -62,38 +63,6 @@ def process_words_from_file(file_path):
     except Exception as e:
         logger.error(f"Error processing file: {e}")
 
-def run_demo():
-    """Run the demo showing different usage patterns"""
-    logger.header("Auto-Anki Maker Demo", "🌸")
-    
-    # Method 1: Individual word processing
-    logger.info("Method 1: Individual Word Processing", "🎯")
-    words = ['行く', '来る', '食べる']
-    for word_str in words:
-        word = JapaneseWord(word_str)
-        word.display()
-        console.print()
-    
-    # Method 2: Batch processing
-    logger.info("Method 2: Batch Processing", "📦")
-    jp_word_list = jp_words(['行く', '来る', '食べる'])
-    for word in jp_word_list:
-        word.display()
-        console.print()
-    
-    # Method 3: JSON output
-    logger.info("Method 3: Raw JSON Data", "📋")
-    word = JapaneseWord('行く')
-    result = word.get_primary_meaning()
-    
-    # Create a beautiful JSON display
-    json_panel = Panel(
-        json.dumps(result, indent=2, ensure_ascii=False),
-        title="📄 JSON Data Structure",
-        border_style="green"
-    )
-    console.print(json_panel)
-
 def main():
     """Main function with argument parsing"""
     # Welcome message
@@ -121,6 +90,9 @@ Examples:
                         action='store_true',
                         help='🌸 Run a demo')
     args = parser.parse_args()
+
+    client = AnkiClient()
+    print(client.get_cards())
     
     try:
         if args.file:
