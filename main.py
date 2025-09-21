@@ -26,7 +26,15 @@ def process_single_word(word_text, create=False):
             logger.success(f"Found translation for: {word_text}", "✨")
             if create:
                 client = AnkiClient()
-                client.create_card(word.meaning)
+                try:
+                    logger.info(f"Creating Anki card for: {word_text}", "📝")
+                    client.create_card(word.meaning)
+                    logger.success(f"Successfully created Anki card for: {word_text}", "🎴")
+                except Exception as e:
+                    if "duplicate" in str(e).lower():
+                        logger.warning(f"Card for '{word_text}' already exists in deck", "🔄")
+                    else:
+                        logger.error(f"Failed to create card for '{word_text}': {e}", "❌")
         else:
             logger.warning(f"No translation found for: {word_text}", "❓")
             logger.info("Try checking the spelling or using a different form of the word", "💡")
@@ -61,7 +69,15 @@ def process_words_from_file(file_path, create=False):
             word.display()
             console.print()  # Add spacing between words
             if create:
-                client.create_card(word.meaning)
+                try:
+                    logger.info(f"Creating Anki card for: {word.word}", "📝")
+                    client.create_card(word.meaning)
+                    logger.success(f"Successfully created Anki card for: {word.word}", "🎴")
+                except Exception as e:
+                    if "duplicate" in str(e).lower():
+                        logger.warning(f"Card for '{word.word}' already exists in deck", "🔄")
+                    else:
+                        logger.error(f"Failed to create card for '{word.word}': {e}", "❌")
         
         logger.success(f"Completed processing {len(words)} words!", "🎉")
                 
@@ -104,10 +120,10 @@ Examples:
     try:
         if args.file:
             # Process words from file
-            process_words_from_file(args.file)
+            process_words_from_file(args.file, create=args.create)
         elif args.word:
             # Process single word
-            process_single_word(args.word)
+            process_single_word(args.word, create=args.create)
         else:
             logger.info("No arguments provided, doing nothing", "🌸")
             logger.info("Try: uv run main.py --help for usage options", "💡")
