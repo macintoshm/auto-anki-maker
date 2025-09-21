@@ -8,14 +8,12 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-# Anki Connect API URL
-ANKI_URL = '127.0.0.1:8765'
 
 class AnkiClient:
     """Client for connecting to the Anki Connect API"""
     
     def __init__(self):
-        self.api_url = f"http://{ANKI_URL}"
+        self.api_url = os.getenv('ANKI_URL')
         self.deck_name = os.getenv('AUTO_ANKI_DECK_NAME')
     
     def post(self, payload):
@@ -104,7 +102,13 @@ class AnkiClient:
         sentence_field=os.getenv('AUTO_ANKI_SENTENCE_FIELD')
         sentence_translation_field=os.getenv('AUTO_ANKI_SENTENCE_TRANSLATION_FIELD')
         audio_field=os.getenv('AUTO_ANKI_AUDIO_FIELD')
-        
+
+        print(card_info.get('readings'))
+
+        if card_info.get('examples'):
+            example = card_info['examples'][0]
+            sentence = example['sentences']['japanese']
+            sentence_translation = example['sentences']['english']
 
         payload = {
             "action": "addNote",
@@ -115,23 +119,32 @@ class AnkiClient:
                     "modelName": card_type,
                     "fields": {
                         word_field: card_info.get('word'),
-                        reading_field: card_info.get('readings'),
-                        meaning_field: card_info.get('meanings'),
-                        part_of_speech_field: card_info.get('part_of_speech'),
-                        sentence_field: card_info.get('sentences'),
-                        sentence_translation_field: card_info.get('sentence_translations')
+                        reading_field: ', '.join(card_info.get('readings', [])),
+                        meaning_field: ', '.join(card_info.get('meanings', [])[:3]),
+                        part_of_speech_field: ', '.join(card_info.get('part_of_speech', [])),
+                        sentence_field: sentence if sentence else '',
+                        sentence_translation_field: sentence_translation if sentence_translation else '',
+                    },
+                    "options": {
+                        "allowDuplicate": False,
+                        "duplicateScope": "deck",
+                        "duplicateScopeOptions": {
+                            "deckName": self.deck_name,
+                            "checkChildren": False,
+                            "checkAllModels": False
+                        }
                     },
                     "tags": [
                         "auto-anki"
-                    ],
-                    "audio": {
-                        "url": "https://assets.languagepod101.com/dictionary/japanese/audiomp3.php?kanji=猫&kana=ねこ",
-                        "filename": "yomichan_ねこ_猫.mp3",
-                        "skipHash": "7e2c2f954ef6051373ba916f000168dc",
-                    "fields": [
-                        audio_field
                     ]
-                    }
+                    # "audio": {
+                    #     "url": "https://assets.languagepod101.com/dictionary/japanese/audiomp3.php?kanji=猫&kana=ねこ",
+                    #     "filename": "yomichan_ねこ_猫.mp3",
+                    #     "skipHash": "7e2c2f954ef6051373ba916f000168dc",
+                    # "fields": [
+                    #     audio_field
+                    # ]
+                    # }
                 }
             }
         }

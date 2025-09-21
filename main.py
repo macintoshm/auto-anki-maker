@@ -13,26 +13,29 @@ from auto_anki_maker.anki_client import AnkiClient
 console = Console()
 
 
-def process_single_word(word_text):
+def process_single_word(word_text, create=False):
     """Process and display a single Japanese word"""
     try:
         logger.info(f"Looking up word: {word_text}", "🔍")
         logger.header(f"Word Lookup", "📚")
         
         word = JapaneseWord(word_text)
-        word.display()
         
         if word.meaning:
             word.display()
             logger.success(f"Found translation for: {word_text}", "✨")
+            if create:
+                client = AnkiClient()
+                client.create_card(word.meaning)
         else:
             logger.warning(f"No translation found for: {word_text}", "❓")
             logger.info("Try checking the spelling or using a different form of the word", "💡")
-                
+    
+
     except Exception as e:
         logger.error(f"Error processing word '{word_text}': {e}")
 
-def process_words_from_file(file_path):
+def process_words_from_file(file_path, create=False):
     """Read words from a text file and display their meanings"""
     try:
         logger.info(f"Reading words from file: {file_path}", "📖")
@@ -50,11 +53,15 @@ def process_words_from_file(file_path):
                 word = JapaneseWord(word_text)
                 processed_words.append(word)
         
+        if create:
+            client = AnkiClient()
         # Display results after progress is complete
         console.print()  # Add spacing after progress bar
         for word in processed_words:
             word.display()
             console.print()  # Add spacing between words
+            if create:
+                client.create_card(word.meaning)
         
         logger.success(f"Completed processing {len(words)} words!", "🎉")
                 
@@ -89,13 +96,10 @@ Examples:
     parser.add_argument('-d', '--demo',
                         action='store_true',
                         help='🌸 Run a demo')
+    parser.add_argument('-c', '--create',
+                        action='store_true',
+                        help='🗂️ Create card(s) in Anki')
     args = parser.parse_args()
-
-    word = process_single_word('猫')
-
-    # client = AnkiClient()
-    # print(client.get_cards())
-    # print(client.get_card_info(client.get_cards()))
     
     try:
         if args.file:
@@ -104,9 +108,6 @@ Examples:
         elif args.word:
             # Process single word
             process_single_word(args.word)
-        elif args.demo:
-            # Run the demo
-            run_demo()
         else:
             logger.info("No arguments provided, doing nothing", "🌸")
             logger.info("Try: uv run main.py --help for usage options", "💡")
