@@ -6,6 +6,10 @@ I created AutoAnkiMaker to create a whole bunch of Anki flashcards from just a l
 
 ## How to Use
 
+- Download jmdict
+- Create Anki deck with fields
+- Fill out .env from .env.example
+- `uv tool install . -e`
 
 ## Resources
 
