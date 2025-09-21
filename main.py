@@ -91,8 +91,11 @@ Examples:
                         help='🌸 Run a demo')
     args = parser.parse_args()
 
-    client = AnkiClient()
-    print(client.get_cards())
+    word = process_single_word('猫')
+    print(word)
+    # client = AnkiClient()
+    # print(client.get_cards())
+    # print(client.get_card_info(client.get_cards()))
     
     try:
         if args.file:
