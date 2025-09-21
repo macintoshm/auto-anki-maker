@@ -100,7 +100,7 @@ def main():
     logger.info("Starting Japanese Dictionary Lookup Tool", "🚀")
     
     parser = argparse.ArgumentParser(
-        description='🌸 YASA - Yet Another Study Aid - Japanese Dictionary Lookup Tool for Creating Anki Cards! 🌸',
+        description='🌸 Yasashii Anki - Japanese Dictionary Lookup Tool for Creating Anki Cards! 🌸',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -116,9 +116,6 @@ Examples:
     parser.add_argument('-w', '--word',
                         type=str,
                         help='🔍 Look up a single Japanese word')
-    parser.add_argument('-d', '--demo',
-                        action='store_true',
-                        help='🌸 Run a demo')
     parser.add_argument('-c', '--create',
                         action='store_true',
                         help='🗂️ Create card(s) in Anki')
@@ -135,7 +132,7 @@ Examples:
             logger.info("No arguments provided, showing help", "🌸")
             parser.print_help()
         
-        logger.success("Thanks for using YASA (Yet Another Study Aid)! 頑張って!", "🎌")
+        logger.success("Thanks for using Yasashii! 頑張って!", "🎌")
         
     except KeyboardInterrupt:
         logger.warning("Operation cancelled by user", "⏹️")

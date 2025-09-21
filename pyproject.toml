@@ -13,3 +13,6 @@ dependencies = [
 
 [project.scripts]
 yasashii = "yasashii.__main__:main"
+
+[tool.uv]
+package = true

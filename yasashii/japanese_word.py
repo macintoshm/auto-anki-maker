@@ -2,15 +2,21 @@
 
 import json
 import jmespath
+import os
 from rich.progress import track
 from rich.console import Console
 from .logging import logger
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Set up Rich console
 console = Console()
 
 # Load the Japanese dictionary data
-with open('jmdict-with-examples.json', 'r') as f:
+dict_path = os.getenv('JMDICT_PATH')
+with open(dict_path, 'r') as f:
     jmdict_words = json.load(f).get('words')
 
 class JapaneseWord(str):

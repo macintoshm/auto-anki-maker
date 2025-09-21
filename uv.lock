@@ -139,7 +139,7 @@ wheels = [
 [[package]]
 name = "yasashii-anki"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "jmespath" },
     { name = "python-dotenv" },
