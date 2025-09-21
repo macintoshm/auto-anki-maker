@@ -20,9 +20,9 @@ def process_single_word(word_text):
         logger.header(f"Word Lookup", "📚")
         
         word = JapaneseWord(word_text)
-        meaning = word.get_primary_meaning()
+        word.display()
         
-        if meaning:
+        if word.meaning:
             word.display()
             logger.success(f"Found translation for: {word_text}", "✨")
         else:
@@ -92,7 +92,7 @@ Examples:
     args = parser.parse_args()
 
     word = process_single_word('猫')
-    print(word)
+
     # client = AnkiClient()
     # print(client.get_cards())
     # print(client.get_card_info(client.get_cards()))

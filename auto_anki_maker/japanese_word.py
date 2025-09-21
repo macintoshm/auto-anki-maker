@@ -15,6 +15,11 @@ with open('jmdict-with-examples.json', 'r') as f:
 
 class JapaneseWord(str):
     """Extended string class for Japanese words with dictionary lookup capabilities"""
+
+    def __init__(self, word: str):
+        super().__init__()
+        self.word = word
+        self.meaning = self._get_primary_meaning()
     
     def _get_jp_word(self, word: str, prefer_common=True, max_senses=3):
         """
@@ -64,10 +69,9 @@ class JapaneseWord(str):
             
         return best_result
     
-    def get_primary_meaning(self, max_examples=2):
+    def _get_primary_meaning(self, max_examples=2):
         """Get the primary meaning of this Japanese word"""
-        word = super().__str__()
-        result = self._get_jp_word(word, prefer_common=True, max_senses=1)
+        result = self._get_jp_word(self.word, prefer_common=True, max_senses=1)
         if result and result.get('sense'):
             primary_sense = result['sense'][0]
             
@@ -97,7 +101,7 @@ class JapaneseWord(str):
                     examples.append(example_entry)
             
             return {
-                'word': word,
+                'word': self.word,
                 'readings': [k['text'] for k in result.get('kana', []) if k.get('common', False)][:2],
                 'kanji': [k['text'] for k in result.get('kanji', []) if k.get('common', False)][:2],
                 'meanings': [g['text'] for g in primary_sense.get('gloss', [])],
@@ -106,28 +110,39 @@ class JapaneseWord(str):
             }
         return None
     
-    def format_display(self):
-        """Display the word using colorful logging"""
-        meaning = self.get_primary_meaning()
-        if not meaning:
-            logger.warning(f"No translation found for: {super().__str__()}", "❓")
-            return ""
-        
-        logger.word_result(meaning)
-        return ""  # Return empty string since logging handles display
-    
+
     def display(self):
         """Display the word using colorful logging (for explicit display calls)"""
-        self.format_display()
+        if not self.meaning:
+            logger.warning(f"No translation found for: {self.word}", "❓")
+        else:
+            logger.word_result(self.meaning)
     
+
     def __str__(self):
-        """Return the formatted display when printed"""
-        self.format_display()
-        return f"JapaneseWord('{super().__str__()}')"  # Return simple representation
+        """Return a formatted string representation of the word"""
+        if not self.meaning:
+            return f"JapaneseWord('{self.word}') - No translation found"
+            
+        readings = ', '.join(self.meaning.get('readings', []))
+        meanings = ', '.join(self.meaning.get('meanings', [])[:3])  # Limit to 3 meanings
+        if readings:
+            return f"{self.word} ({readings}) - {meanings}"
+        else:
+            return f"{self.word} - {meanings}"
     
     def __repr__(self):
-        """Return representation for debugging"""
-        return f"JapaneseWord('{super().__str__()}')"
+        """Return detailed representation for debugging"""
+        if not self.meaning:
+            return f"JapaneseWord('{self.word}', found=False)"
+            
+        readings = self.meaning.get('readings', [])
+        meanings = self.meaning.get('meanings', [])
+        examples = self.meaning.get('examples', [])
+        
+        return (f"JapaneseWord('{self.word}', found=True, "
+                f"readings={len(readings)}, meanings={len(meanings)}, "
+                f"examples={len(examples)})")
     
     @staticmethod
     def format_multiple_words(words_list):
