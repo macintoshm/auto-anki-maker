@@ -27,7 +27,7 @@ class ColorfulLogger:
         panel = Panel(
             Text(title, style="bold magenta"), 
             border_style="magenta",
-            title=f"{emoji} Auto-Anki Maker {emoji}"
+            title=f"{emoji} Yasashii Anki {emoji}"
         )
         self.console.print(panel)
     

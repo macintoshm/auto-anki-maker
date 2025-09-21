@@ -1,4 +1,4 @@
-# 🗂️ auto-anki-maker
+# 🗂️ Yasashii Anki
 
 I wanted an easier way to create anki flashcards without needing to manually input them myself, a long and exhausting task. 
 

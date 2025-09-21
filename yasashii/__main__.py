@@ -1,13 +1,19 @@
-import json
+#!/usr/bin/env -S uv run
+
+"""
+Yasashii Anki - Command Line Entry Point
+Japanese Dictionary Lookup Tool for Creating Anki Cards
+"""
+
 import argparse
 from rich.console import Console
 from rich.panel import Panel
 from rich.progress import track
 
 # Import our custom modules
-from auto_anki_maker.logging import logger
-from auto_anki_maker.japanese_word import JapaneseWord, jp_words
-from auto_anki_maker.anki_client import AnkiClient
+from .logging import logger
+from .japanese_word import JapaneseWord
+from .anki_client import AnkiClient
 
 # Set up Rich console
 console = Console()
@@ -42,6 +48,7 @@ def process_single_word(word_text, create=False):
 
     except Exception as e:
         logger.error(f"Error processing word '{word_text}': {e}")
+
 
 def process_words_from_file(file_path, create=False):
     """Read words from a text file and display their meanings"""
@@ -89,18 +96,18 @@ def process_words_from_file(file_path, create=False):
 def main():
     """Main function with argument parsing"""
     # Welcome message
-    console.rule("🌸 Auto-Anki Maker 🌸", style="magenta")
+    console.rule("🌸 Yasashii Anki 🌸", style="magenta")
     logger.info("Starting Japanese Dictionary Lookup Tool", "🚀")
     
     parser = argparse.ArgumentParser(
-        description='🌸 Japanese Dictionary Lookup Tool - Create beautiful Anki cards! 🌸',
+        description='🌸 YASA - Yet Another Study Aid - Japanese Dictionary Lookup Tool for Creating Anki Cards! 🌸',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python main.py -w 力             # Look up a single word
-  python main.py --word 食べる     # Same as above
-  python main.py -f words.txt      # Process words from file
-  python main.py --demo            # Run interactive demo
+  yasa -w 力             # Look up a single word
+  yasa --word 食べる     # Same as above
+  yasa -f words.txt      # Process words from file
+  yasa -w 行く --create  # Look up word and create Anki card
         """
     )
     parser.add_argument('-f', '--file', 
@@ -125,10 +132,10 @@ Examples:
             # Process single word
             process_single_word(args.word, create=args.create)
         else:
-            logger.info("No arguments provided, doing nothing", "🌸")
-            logger.info("Try: uv run main.py --help for usage options", "💡")
+            logger.info("No arguments provided, showing help", "🌸")
+            parser.print_help()
         
-        logger.success("Thanks for using Auto-Anki Maker! 頑張って!", "🎌")
+        logger.success("Thanks for using YASA (Yet Another Study Aid)! 頑張って!", "🎌")
         
     except KeyboardInterrupt:
         logger.warning("Operation cancelled by user", "⏹️")

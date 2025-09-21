@@ -1,11 +1,15 @@
 [project]
-name = "auto-anki-maker"
+name = "yasashii_anki"
 version = "0.1.0"
-description = "Add your description here"
+description = "A CLI tool for looking up Japanese word definitions and adding them to your Anki deck automatically"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "jmespath>=1.0.1",
     "python-dotenv>=1.1.1",
     "requests>=2.32.5",
     "rich>=14.1.0",
 ]
+
+[project.scripts]
+yasashii = "yasashii.__main__:main"

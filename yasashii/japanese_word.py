@@ -160,8 +160,3 @@ class JapaneseWord(str):
         for word in processed_words:
             word.display()
             console.print()  # Add spacing between words
-
-
-def jp_words(word_list):
-    """Convert a list of strings to JapaneseWord objects"""
-    return [JapaneseWord(word) for word in word_list]
