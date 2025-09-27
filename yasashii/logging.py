@@ -40,7 +40,6 @@ class ColorfulLogger:
         self.console.print(f"[bold cyan]Word:\t\t[/bold cyan][bold yellow]{word_data.get('word', 'N/A')}[/bold yellow]")
         self.console.print(f"[bold cyan]Reading:\t[/bold cyan][green]{', '.join(word_data.get('readings', []))}[/green]")
         self.console.print(f"[bold cyan]Meaning:\t[/bold cyan][blue]{word_data.get('meanings', '')}[/blue]")
-        self.console.print(f"[bold cyan]Type:\t\t[/bold cyan][magenta]{', '.join(word_data.get('part_of_speech', []))}[/magenta]")
         
         if word_data.get('examples'):
             example = word_data['examples'][0]

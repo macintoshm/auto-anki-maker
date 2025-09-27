@@ -107,16 +107,23 @@ class JapaneseWord(str):
                     examples.append(example_entry)
 
             meanings = [g['text'] for g in primary_sense.get('gloss', [])]
+            part_of_speech = primary_sense.get('partOfSpeech', [])
             
-            # Format meanings as numbered list
-            formatted_meanings = '\n'.join([f"{i+1}. {meaning}" for i, meaning in enumerate(meanings)])
+            # Format meanings as numbered list with part of speech in parentheses
+            formatted_meanings_list = []
+            for i, meaning in enumerate(meanings):
+                # Include part of speech with each meaning
+                pos_str = ', '.join(part_of_speech) if part_of_speech else ''
+                pos_prefix = f"({pos_str}) " if pos_str else ''
+                formatted_meanings_list.append(f"{i+1}. {pos_prefix}{meaning}")
+            
+            formatted_meanings = '\n'.join(formatted_meanings_list)
             
             return {
                 'word': self.word,
                 'readings': [k['text'] for k in result.get('kana', []) if k.get('common', False)][:2],
                 'kanji': [k['text'] for k in result.get('kanji', []) if k.get('common', False)][:2],
                 'meanings': formatted_meanings,
-                'part_of_speech': primary_sense.get('partOfSpeech', []),
                 'examples': examples
             }
         return None

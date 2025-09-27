@@ -98,7 +98,6 @@ class AnkiClient:
         word_field=os.getenv('AUTO_ANKI_WORD_FIELD')
         reading_field=os.getenv('AUTO_ANKI_READING_FIELD')
         meaning_field=os.getenv('AUTO_ANKI_MEANING_FIELD')
-        part_of_speech_field=os.getenv('AUTO_ANKI_PART_OF_SPEECH_FIELD')
         sentence_field=os.getenv('AUTO_ANKI_SENTENCE_FIELD')
         sentence_translation_field=os.getenv('AUTO_ANKI_SENTENCE_TRANSLATION_FIELD')
         audio_field=os.getenv('AUTO_ANKI_AUDIO_FIELD')
@@ -119,7 +118,6 @@ class AnkiClient:
                         word_field: card_info.get('word'),
                         reading_field: ', '.join(card_info.get('readings', [])),
                         meaning_field: ', '.join(card_info.get('meanings', [])[:3]),
-                        part_of_speech_field: ', '.join(card_info.get('part_of_speech', [])),
                         sentence_field: sentence if sentence else '',
                         sentence_translation_field: sentence_translation if sentence_translation else '',
                     },
