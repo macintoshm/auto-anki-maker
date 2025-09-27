@@ -105,12 +105,17 @@ class JapaneseWord(str):
                         'english': eng_sentences[0]
                     }
                     examples.append(example_entry)
+
+            meanings = [g['text'] for g in primary_sense.get('gloss', [])]
+            
+            # Format meanings as numbered list
+            formatted_meanings = '\n'.join([f"{i+1}. {meaning}" for i, meaning in enumerate(meanings)])
             
             return {
                 'word': self.word,
                 'readings': [k['text'] for k in result.get('kana', []) if k.get('common', False)][:2],
                 'kanji': [k['text'] for k in result.get('kanji', []) if k.get('common', False)][:2],
-                'meanings': [g['text'] for g in primary_sense.get('gloss', [])],
+                'meanings': formatted_meanings,
                 'part_of_speech': primary_sense.get('partOfSpeech', []),
                 'examples': examples
             }
@@ -123,7 +128,6 @@ class JapaneseWord(str):
             logger.warning(f"No translation found for: {self.word}", "❓")
         else:
             logger.word_result(self.meaning)
-    
 
     def __str__(self):
         """Return a formatted string representation of the word"""
@@ -131,7 +135,7 @@ class JapaneseWord(str):
             return f"JapaneseWord('{self.word}') - No translation found"
             
         readings = ', '.join(self.meaning.get('readings', []))
-        meanings = ', '.join(self.meaning.get('meanings', [])[:3])  # Limit to 3 meanings
+        meanings = self.meaning.get('meanings', '')  # Already formatted as numbered list
         if readings:
             return f"{self.word} ({readings}) - {meanings}"
         else:

@@ -7,7 +7,6 @@ Japanese Dictionary Lookup Tool for Creating Anki Cards
 
 import argparse
 from rich.console import Console
-from rich.panel import Panel
 from rich.progress import track
 
 # Import our custom modules
@@ -18,18 +17,38 @@ from .anki_client import AnkiClient
 # Set up Rich console
 console = Console()
 
+parser = argparse.ArgumentParser(
+        description='🌸 Yasashii Anki - Japanese Dictionary Lookup Tool for Creating Anki Cards! 🌸',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  yasashii 力               # Look up a single word
+  yasashii 誰も 犬          # Look up multiple words
+  yasashii -f words.txt     # Process words from file
+  yasashii 行く --create    # Look up word and create Anki card
+  yasashii 食べる 寝る --create  # Look up multiple words and create Anki cards
+        """
+    )
+parser.add_argument('words', 
+                    nargs='*',
+                    help='🔍 Japanese words to look up (can specify multiple)')
+parser.add_argument('-f', '--file', 
+                    type=str,
+                    help='📁 Path to a text file containing Japanese words (one per line)')
+parser.add_argument('-c', '--create',
+                    action='store_true',
+                    help='🗂️ Create card(s) in Anki')
+args = parser.parse_args()
 
 def process_single_word(word_text, create=False):
     """Process and display a single Japanese word"""
     try:
         logger.info(f"Looking up word: {word_text}", "🔍")
-        logger.header(f"Word Lookup", "📚")
         
         word = JapaneseWord(word_text)
         
         if word.meaning:
             word.display()
-            logger.success(f"Found translation for: {word_text}", "✨")
             if create:
                 client = AnkiClient()
                 try:
@@ -95,8 +114,7 @@ def process_words_from_file(file_path, create=False):
 
 def process_multiple_words(words, create=False):
     """Process multiple Japanese words"""
-    logger.success(f"Found {len(words)} words to process", "🎯")
-    logger.header(f"Processing Words", "📂")
+    logger.success(f"{len(words)} words to process", "🎯")
     
     # Process words with progress bar
     processed_words = []
@@ -129,33 +147,9 @@ def process_multiple_words(words, create=False):
 
 def main():
     """Main function with argument parsing"""
-    # Welcome message
+
     console.rule("🌸 Yasashii Anki 🌸", style="magenta")
-    logger.info("Starting Japanese Dictionary Lookup Tool", "🚀")
-    
-    parser = argparse.ArgumentParser(
-        description='🌸 Yasashii Anki - Japanese Dictionary Lookup Tool for Creating Anki Cards! 🌸',
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  yasashii 力               # Look up a single word
-  yasashii 誰も 犬          # Look up multiple words
-  yasashii -f words.txt     # Process words from file
-  yasashii 行く --create    # Look up word and create Anki card
-  yasashii 食べる 寝る --create  # Look up multiple words and create Anki cards
-        """
-    )
-    parser.add_argument('words', 
-                        nargs='*',
-                        help='🔍 Japanese words to look up (can specify multiple)')
-    parser.add_argument('-f', '--file', 
-                        type=str,
-                        help='📁 Path to a text file containing Japanese words (one per line)')
-    parser.add_argument('-c', '--create',
-                        action='store_true',
-                        help='🗂️ Create card(s) in Anki')
-    args = parser.parse_args()
-    
+
     try:
         if args.file:
             # Process words from file
@@ -180,7 +174,3 @@ Examples:
 
 if __name__ == "__main__":
     main()
-
-def alfred():
-    """Alfred workflow entry point"""
-    print("Alfred workflow entry point")

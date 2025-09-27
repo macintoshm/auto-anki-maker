@@ -36,26 +36,19 @@ class ColorfulLogger:
         if not word_data:
             return
             
-        table = Table(show_header=False, border_style="cyan", padding=(0, 1), width=80)
-        table.add_column("Field", style="bold cyan", no_wrap=True, width=12)
-        table.add_column("Value", style="white", max_width=65)
-        
-        table.add_row("Word", f"[bold yellow]{word_data.get('word', 'N/A')}[/bold yellow]")
-        table.add_row("Reading", f"[green]{', '.join(word_data.get('readings', []))}[/green]")
-        table.add_row("Meaning", f"[blue]{', '.join(word_data.get('meanings', [])[:3])}[/blue]")
-        table.add_row("Type", f"[magenta]{', '.join(word_data.get('part_of_speech', []))}[/magenta]")
+        self.console.print(f"\n{emoji} [bold cyan]{word_data.get('word', 'Word')}[/bold cyan]")
+        self.console.print(f"[bold cyan]Word:\t\t[/bold cyan][bold yellow]{word_data.get('word', 'N/A')}[/bold yellow]")
+        self.console.print(f"[bold cyan]Reading:\t[/bold cyan][green]{', '.join(word_data.get('readings', []))}[/green]")
+        self.console.print(f"[bold cyan]Meaning:\t[/bold cyan][blue]{word_data.get('meanings', '')}[/blue]")
+        self.console.print(f"[bold cyan]Type:\t\t[/bold cyan][magenta]{', '.join(word_data.get('part_of_speech', []))}[/magenta]")
         
         if word_data.get('examples'):
             example = word_data['examples'][0]
-            table.add_row("Example", f"[dim white]{example['sentences']['japanese']}[/dim white]")
-            table.add_row("Translation", f"[dim cyan]{example['sentences']['english']}[/dim cyan]")
+            self.console.print(f"[bold cyan]Example:\t[/bold cyan][dim white]{example['sentences']['japanese']}[/dim white]")
+            self.console.print(f"[bold cyan]Translation:\t[/bold cyan][dim cyan]{example['sentences']['english']}[/dim cyan]")
         
-        self.console.print(Panel(
-            table, 
-            title=f"{emoji} {word_data.get('word', 'Word')}", 
-            border_style="cyan",
-            width=84
-        ))
+        self.console.print()
+
 
 # Create global logger instance
 logger = ColorfulLogger()
